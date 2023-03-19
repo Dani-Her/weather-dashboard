@@ -2,7 +2,7 @@ let weather = {
     "apiKey": "fa022f61728520158a5e26d33b931081",
     fetchWeather: function (city) {
         fetch(
-            "https://api.openweathermap.org/data/2.5/weather?q=" 
+            "https://api.openweathermap.org/data/2.5/weather?q="
             + city
             + "&units=metric&appid=" + this.apiKey
         )
@@ -35,6 +35,26 @@ let weather = {
     },
     search: function () {
         this.fetchWeather(document.querySelector(".search-bar").value);
+
+        var results = $("response");
+        results.addClass("results");
+        results.attr("data-name");
+        results.text(city)
+        $(".form").append(results);
+
+        cities.push(City)
+
+        if (localStorage.getItem("allCities")) {
+            var citiesString = [...cities, ...JSON.parse(localStorage.getItem("allCities"))]
+            var noDuplicates = citiesString.filter((item, index) => citiesString.indexOf(item) === index);
+            noDuplicates = JSON.stringify(noDuplicates);
+            localStorage.setItem("allCities", noDuplicates)
+        } else {
+            var citiesString = JSON.stringify(cities)
+            localStorage.setItem("allCities", citiesString)
+        }
+
+        console.log(cities)
     },
 };
 
@@ -51,3 +71,31 @@ document
     });
 
 weather.fetchWeather("London");
+
+
+function renderCitiesLocalStorage() {
+    var citiesArray = JSON.parse(localStorage.getItem("allCities"))
+
+    for (var i = 0; i < citiesArray.length; i++) {
+
+        var results = $("response");
+        results.addClass("results");
+        results.attr("data-name", citiesArray[i]);
+        results.text(citiesArray[i]);
+        $(".form").append(results);
+        results.on("click", function () {
+            event.preventDefault();
+            displayWeather($(this).attr("data-name")); 
+        })
+    }
+
+
+};
+
+if (localStorage.getItem("allCities")) {
+    renderCitiesLocalStorage();
+};
+
+
+
+
